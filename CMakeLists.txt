@@ -19,14 +19,18 @@ set_target_properties(kkmeans PROPERTIES
 	COMPILE_OPTIONS -Wpedantic -Wall -Wextra
 	CMAKE_CXX_STANDARD 14
 	CMAKE_CXX_STANDARD_REQUIRED ON
-	INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
 )
 
 target_link_libraries(kkmeans
 	${CMAKE_THREAD_LIBS_INIT}
+	dlib
 )
 
 install(TARGETS kkmeans DESTINATION bin)
+install(TARGETS sample.png DESTINATION bin)
+install(TARGETS star.png DESTINATION bin)
+install(TARGETS kkmeans_ex.txt DESTINATION bin)
+install(TARGETS kkmeans_rnd.txt DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 

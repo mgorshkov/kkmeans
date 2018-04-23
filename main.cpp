@@ -6,13 +6,20 @@ int main(int argc, char* argv[])
 {
     try
     {
-        if (argc != 4)
+        if (argc != 2)
         {
-            std::cerr << "Usage: kkmeans < input_data" << std::endl;
+            std::cerr << "Usage: cat inputdata | kkmeans <numclusters>" << std::endl;
             return 1;
         }
 
-        Kkmeans kkmeans(std::cin);
+        int numclusters = std::atoi(argv[1]);
+        if (numclusters == 0)
+        {
+            std::cerr << "Incorrect number of clusters: " << argv[1] << std::endl;
+            return 1;
+        }
+
+        Kkmeans kkmeans(numclusters, std::cin);
         kkmeans.Run();
     }
     catch (std::exception& e)
