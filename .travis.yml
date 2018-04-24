@@ -14,10 +14,10 @@ matrix:
           sources:
             - sourceline: "deb http://us.archive.ubuntu.com/ubuntu/ xenial main universe"
           packages:
-            - g++-6
+            - g++-5
             - libdlib-dev
       env:
-        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
         - BUILD_DIR=build
         - PROJECT_NAME=kkmeans
 before_install:
