@@ -10,9 +10,8 @@ if (DEBUG_PRINT)
 	add_definitions(-DDEBUG_PRINT)
 endif()
 
-find_package(dlib REQUIRED)
-
-include_directories(${dlib_INCLUDE_DIRS})
+include_directories(dlib)
+link_directories(dlib/dlib)
 
 add_executable(kkmeans
 	kkmeans.h
@@ -27,7 +26,8 @@ set_target_properties(kkmeans PROPERTIES
 
 target_link_libraries(kkmeans
 	${CMAKE_THREAD_LIBS_INIT}
-	${dlib_LIBS}
+	dlib
+	png
 )
 
 install(TARGETS kkmeans DESTINATION bin)

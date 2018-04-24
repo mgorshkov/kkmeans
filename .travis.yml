@@ -16,7 +16,7 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-7
-            - libdlib-dev
+            - liblapack-dev
             - libopenblas-dev
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
@@ -24,6 +24,12 @@ matrix:
         - PROJECT_NAME=kkmeans
 before_install:
   - eval "${MATRIX_EVAL}"
+install:
+  - git clone https://github.com/davisking/dlib.git
+  - cd dlib
+  - cmake .
+  - cmake --build .
+  - cd ..
 script:
   - mkdir ${BUILD_DIR}
   - cd ${BUILD_DIR}
