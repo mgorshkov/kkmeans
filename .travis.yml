@@ -1,34 +1,10 @@
 language: cpp
-compiler: gcc
-os:
-  - linux
-dist: trusty
-sudo: false
-matrix:
-  include:
-    # works on Precise and Trusty
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-7
-      env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-        - BUILD_DIR=build
-        - PROJECT_NAME=kkmeans
-before_install:
-  - eval "${MATRIX_EVAL}"
-install:
-  - sudo apt-get install -qq doxygen graphviz libdlib-dev libopenblas-dev
 before_script:
+  - sudo apt-get install doxygen graphviz libdlib-dev libopenblas-dev
   - echo "deb http://archive.ubuntu.com/ubuntu xenial main universe" | sudo tee -a /etc/apt/sources.list
   - sudo apt-get update -qq
 script:
-  - mkdir ${BUILD_DIR}
-  - cd ${BUILD_DIR}
-  - cmake ..
+  - cmake .
   - cmake --build .
   - cmake --build . --target package
 after_success:
