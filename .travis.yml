@@ -14,14 +14,10 @@ matrix:
           sources:
             - sourceline: "deb http://us.archive.ubuntu.com/ubuntu/ xenial main universe"
           packages:
-            - g++-7
             - libdlib-dev
       env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
         - BUILD_DIR=build
         - PROJECT_NAME=kkmeans
-before_install:
-  - eval "${MATRIX_EVAL}"
 script:
   - mkdir ${BUILD_DIR}
   - cd ${BUILD_DIR}
