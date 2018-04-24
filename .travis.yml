@@ -4,6 +4,7 @@ os:
   - linux
 dist: trusty
 sudo: false
+
 matrix:
   include:
     # works on Precise and Trusty
@@ -11,7 +12,7 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
+            - sourceline: "deb http://us.archive.ubuntu.com/ubuntu/ xenial main universe"
           packages:
             - g++-7
             - libdlib-dev
@@ -21,9 +22,6 @@ matrix:
         - PROJECT_NAME=kkmeans
 before_install:
   - eval "${MATRIX_EVAL}"
-  - echo "deb http://archive.ubuntu.com/ubuntu xenial main universe" | sudo tee -a /etc/apt/sources.list
-  - sudo apt-get update -qq
-  - sudo apt-get install -y libdlib-dev
 script:
   - mkdir ${BUILD_DIR}
   - cd ${BUILD_DIR}
