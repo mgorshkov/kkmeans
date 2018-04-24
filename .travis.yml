@@ -1,21 +1,35 @@
 language: cpp
-before_script:
-  - sudo apt-get install doxygen graphviz libdlib-dev libopenblas-dev
+compiler: gcc
+os:
+  - linux
+dist: trusty
+sudo: false
+matrix:
+  include:
+    # works on Precise and Trusty
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+            - libdlib-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+        - BUILD_DIR=build
+        - PROJECT_NAME=kkmeans
+before_install:
+  - eval "${MATRIX_EVAL}"
   - echo "deb http://archive.ubuntu.com/ubuntu xenial main universe" | sudo tee -a /etc/apt/sources.list
   - sudo apt-get update -qq
+  - sudo apt-get install -y libdlib-dev
 script:
-  - cmake .
+  - mkdir ${BUILD_DIR}
+  - cd ${BUILD_DIR}
+  - cmake ..
   - cmake --build .
   - cmake --build . --target package
-after_success:
-  # Generate the docs only if master, and the TRAVIS_BUILD_DOCS is not zero
-  - >-
-    if [[ "$TRAVIS_BRANCH" = "master" && -n "$TRAVIS_BUILD_DOCS" ]] ; then
-      cd $TRAVIS_BUILD_DIR
-      echo 'Generating Doxygen code documentation...'
-      # Redirect both stderr and stdout to the log file AND the console.
-      doxygen doc/Doxyfile 2>&1 | tee doxygen.log
-    fi
 deploy:
   - provider: script
     skip_cleanup: true
