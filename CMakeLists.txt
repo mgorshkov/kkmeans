@@ -23,7 +23,7 @@ set_target_properties(kkmeans PROPERTIES
 
 target_link_libraries(kkmeans
 	${CMAKE_THREAD_LIBS_INIT}
-	dlib
+	dlib-dev
 )
 
 install(TARGETS kkmeans DESTINATION bin)
