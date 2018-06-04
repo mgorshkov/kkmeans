@@ -61,52 +61,56 @@ void Kkmeans::OutputSamplesWithClusters(std::vector<SampleType> aSamples, std::v
     }
 }
 
-void Kkmeans::Run()
+void Kkmeans::VisualizeSamplesWithClusters(std::vector<SampleType> aSamples, std::vector<unsigned long> aAssignments)
 {
-    typedef dlib::radial_basis_kernel<SampleType> kernel_type;
-    dlib::kcentroid<kernel_type> kc(kernel_type(0.1),0.01, 8);
-
-    dlib::kkmeans<kernel_type> test(kc);
-
-    std::vector<SampleType> samples = ReadInput();
-
-    std::vector<SampleType> initial_centers;
-
-    test.set_number_of_centers(mNumClusters);
-
-    pick_initial_centers(mNumClusters, initial_centers, samples, test.get_kernel());
-
-    test.train(samples,initial_centers);
-
-    std::vector<unsigned long> assignments = spectral_cluster(kernel_type(0.1), samples, mNumClusters);
-
-    OutputSamplesWithClusters(samples, assignments);
-
-    double minX = samples[0](0);
-    double maxX = samples[0](0);
-    double minY = samples[0](1);
-    double maxY = samples[0](1);
-    for (std::size_t index = 1; index < samples.size(); ++index)
+    double minX = aSamples[0](0);
+    double maxX = aSamples[0](0);
+    double minY = aSamples[0](1);
+    double maxY = aSamples[0](1);
+    for (std::size_t index = 1; index < aSamples.size(); ++index)
     {
-        if (samples[index](0) < minX)
-            minX = samples[index](0);
-        if (samples[index](1) < minY)
-            minY = samples[index](1);
-        if (samples[index](0) > maxX)
-            maxX = samples[index](0);
-        if (samples[index](1) > maxY)
-            maxY = samples[index](1);
+        if (aSamples[index](0) < minX)
+            minX = aSamples[index](0);
+        if (aSamples[index](1) < minY)
+            minY = aSamples[index](1);
+        if (aSamples[index](0) > maxX)
+            maxX = aSamples[index](0);
+        if (aSamples[index](1) > maxY)
+            maxY = aSamples[index](1);
     }
 
     dlib::array2d<dlib::rgb_pixel> img(1000, 1000);
-    for (std::size_t index = 0; index < samples.size(); ++index)
+    for (std::size_t index = 0; index < aSamples.size(); ++index)
     {
-        unsigned long cluster = assignments[index];
-        unsigned long x = (samples[index](0) - minX) / (maxX - minX) * 1000;
-        unsigned long y = (samples[index](1) - minY) / (maxY - minY) * 1000;
+        unsigned long cluster = aAssignments[index];
+        unsigned long x = (aSamples[index](0) - minX) / (maxX - minX) * 1000;
+        unsigned long y = (aSamples[index](1) - minY) / (maxY - minY) * 1000;
         dlib::rectangle rect(x, y, x + 1, y + 1);
         dlib::rgb_pixel color = dlib::colormap_jet(cluster, 0, mNumClusters);
         dlib::draw_rectangle(img, rect, color, 2);
     }
     dlib::save_png(img, "bubble.png");
+}
+
+void Kkmeans::Run()
+{
+    using RbfKernel = dlib::radial_basis_kernel<SampleType>;
+
+    using SampleVector = std::vector<SampleType>;
+    RbfKernel kernel(0.01);
+
+    dlib::kcentroid<RbfKernel> kc(kernel, 1, 15);
+    dlib::kkmeans<RbfKernel> test(kc);
+    test.set_number_of_centers(mNumClusters);
+
+    SampleVector samples = ReadInput();
+
+    SampleVector initialCenters;
+
+    dlib::pick_initial_centers(mNumClusters, initialCenters, samples, kernel);
+
+    std::vector<unsigned long> assignments = spectral_cluster(kernel, samples, mNumClusters);
+
+    OutputSamplesWithClusters(samples, assignments);
+    VisualizeSamplesWithClusters(samples, assignments);
 }
