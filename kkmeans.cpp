@@ -47,6 +47,20 @@ std::vector<Kkmeans::SampleType> Kkmeans::ReadInput()
     return samples;
 }
 
+void Kkmeans::OutputSamplesWithClusters(std::vector<SampleType> aSamples, std::vector<unsigned long> aAssignments)
+{
+    for (std::size_t index = 0; index < aSamples.size(); ++index)
+    {
+        unsigned long cluster = aAssignments[index];
+        // 86.11;55.33;5\n
+        std::cout << std::fixed << std::setprecision(2)
+                  << aSamples[index](0) << ";"
+                  << aSamples[index](1) << ";"
+                  << std::setprecision(0)
+                  << cluster << std::endl;
+    }
+}
+
 void Kkmeans::Run()
 {
     typedef dlib::radial_basis_kernel<SampleType> kernel_type;
@@ -65,6 +79,8 @@ void Kkmeans::Run()
     test.train(samples,initial_centers);
 
     std::vector<unsigned long> assignments = spectral_cluster(kernel_type(0.1), samples, mNumClusters);
+
+    OutputSamplesWithClusters(samples, assignments);
 
     double minX = samples[0](0);
     double maxX = samples[0](0);
